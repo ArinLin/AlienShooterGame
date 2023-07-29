@@ -17,6 +17,7 @@
 		8467BEE92A73FCD500414B09 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8467BEE72A73FCD500414B09 /* LaunchScreen.storyboard */; };
 		8467BEF02A73FE6700414B09 /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8467BEEF2A73FE6700414B09 /* Explosion.sks */; };
 		8467BEF22A74038700414B09 /* Sky.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8467BEF12A74038700414B09 /* Sky.sks */; };
+		84E3F2862A751003006B44DA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E3F2852A751003006B44DA /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		8467BEE82A73FCD500414B09 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8467BEEF2A73FE6700414B09 /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		8467BEF12A74038700414B09 /* Sky.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Sky.sks; sourceTree = "<group>"; };
+		84E3F2852A751003006B44DA /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				8467BEDC2A73FCD400414B09 /* Actions.sks */,
 				8467BEDE2A73FCD400414B09 /* GameScene.swift */,
 				8467BEE02A73FCD400414B09 /* GameViewController.swift */,
+				84E3F2852A751003006B44DA /* Constants.swift */,
 				8467BEE22A73FCD400414B09 /* Main.storyboard */,
 				8467BEE52A73FCD500414B09 /* Assets.xcassets */,
 				8467BEF12A74038700414B09 /* Sky.sks */,
@@ -155,6 +158,7 @@
 				8467BEDF2A73FCD400414B09 /* GameScene.swift in Sources */,
 				8467BEE12A73FCD400414B09 /* GameViewController.swift in Sources */,
 				8467BED92A73FCD400414B09 /* AppDelegate.swift in Sources */,
+				84E3F2862A751003006B44DA /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
