@@ -109,6 +109,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        enemy.run(sequenceAction)
     }
     
+    func fire() {
+        let torpedo = SKSpriteNode(imageNamed: Resourses.spaceComponentsNames.shoot)
+        torpedo.setScale(0.1)
+        torpedo.position = player.position
+        torpedo.position.y += 5
+        
+        torpedo.physicsBody = SKPhysicsBody(circleOfRadius: torpedo.size.width / 2)
+        torpedo.physicsBody?.isDynamic = true
+        
+        torpedo.physicsBody?.usesPreciseCollisionDetection = true
+        
+        self.addChild(torpedo)
+        
+        let animDuration: TimeInterval = 0.3
+        var actions = [SKAction]()
+        actions.append(SKAction.move(to: CGPoint(x: player.position.x, y: 800), duration: animDuration))
+        actions.append(SKAction.removeFromParent())
+        torpedo.run(SKAction.sequence(actions))
+    }
+    
+    // по тапу на экран стрелять
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        fire()
+    }
+    
     private func checkCollisions() {
             // Loop through all nodes in the scene
             for node in self.children {
