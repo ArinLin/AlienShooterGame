@@ -64,49 +64,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let enemy = SKSpriteNode(imageNamed: enemies[0])
         
         // Set initial position outside the screen boundaries
-                let xStart = CGFloat.random(in: -self.size.width ... self.size.width)
-                let yStart = self.size.height * 1.1 // Slightly above the top of the screen
-
-        enemy.position = CGPoint(x: xStart, y: yStart)
-                enemy.setScale(0.15)
-                enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
-                enemy.physicsBody?.isDynamic = true
+        let xStart = CGFloat.random(in: -self.size.width ... self.size.width)
+        let yStart = self.size.height * 1.1 // Slightly above the top of the screen
         
-//        let randomXPosition = CGFloat.random(in: -self.size.width * 0.3 ... self.size.width * 0.3)
-//
-//        enemy.position = CGPoint(x: randomXPosition, y: self.size.height * 0.5)
-//        enemy.setScale(0.15)
-//        enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
-//        enemy.physicsBody?.isDynamic = true
+        enemy.position = CGPoint(x: xStart, y: yStart)
+        enemy.setScale(0.15)
+        enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+        enemy.physicsBody?.isDynamic = true
         
         enemy.name = "enemy" // Assign a name to the enemy node
         self.addChild(enemy)
         
         // Calculate the movement duration based on the enemy's starting position
-                let deltaX = player.position.x - xStart
-                let deltaY = player.position.y - yStart
-                let distanceToMove = hypot(deltaX, deltaY)
-                let movementSpeed = CGFloat(200.0) // Adjust this value for the desired speed
-
-                // Move the enemy towards the player with a constant speed
-                let movementDuration = TimeInterval(distanceToMove / movementSpeed)
-                let moveAction = SKAction.move(to: player.position, duration: movementDuration)
-        // TODO: - Взрыв и исчезновение с экрана
-                let removeAction = SKAction.removeFromParent()
-                let sequenceAction = SKAction.sequence([moveAction, removeAction])
-
-                enemy.run(sequenceAction)
+        let deltaX = player.position.x - xStart
+        let deltaY = player.position.y - yStart
+        let distanceToMove = hypot(deltaX, deltaY)
+        let movementSpeed = CGFloat(200.0) // Adjust this value for the desired speed
         
-//        // Calculate the movement duration based on the enemy's starting position
-//        let distanceToMove = abs(randomXPosition) // value for the desired distance
-//        let movementDuration = TimeInterval(distanceToMove / 10) // divisor for the desired speed
-//
-//        // Move the enemy towards the spaceship
-//        let moveAction = SKAction.move(to: player.position, duration: movementDuration)
-//        let removeAction = SKAction.removeFromParent()
-//        let sequenceAction = SKAction.sequence([moveAction, removeAction])
-//
-//        enemy.run(sequenceAction)
+        // Move the enemy towards the player with a constant speed
+        let movementDuration = TimeInterval(distanceToMove / movementSpeed)
+        let moveAction = SKAction.move(to: player.position, duration: movementDuration)
+        // TODO: - Взрыв и исчезновение с экрана
+        let removeAction = SKAction.removeFromParent()
+        let sequenceAction = SKAction.sequence([moveAction, removeAction])
+        
+        enemy.run(sequenceAction)
     }
     
     func fire() {
@@ -120,33 +102,65 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         torpedo.physicsBody?.usesPreciseCollisionDetection = true
         
+        torpedo.name = "torpedo"
         self.addChild(torpedo)
         
         let animDuration: TimeInterval = 0.3
-        var actions = [SKAction]()
-        actions.append(SKAction.move(to: CGPoint(x: player.position.x, y: 800), duration: animDuration))
-        actions.append(SKAction.removeFromParent())
-        torpedo.run(SKAction.sequence(actions))
+            var actions = [SKAction]()
+            actions.append(SKAction.move(to: CGPoint(x: player.position.x, y: 800), duration: animDuration))
+            actions.append(SKAction.removeFromParent())
+            torpedo.run(SKAction.sequence(actions))
+
+            // Check for collision with enemies
+            checkEnemyCollision(torpedo: torpedo)
     }
     
+    private func checkEnemyCollision(torpedo: SKSpriteNode) {
+        for node in self.children {
+            if node.name == "enemy" && torpedo.intersects(node) {
+                // Collision with an enemy occurred
+                explodeEnemy(enemy: node)
+                torpedo.removeFromParent()
+                score += 1
+                break
+            }
+        }
+    }
+    
+    
+    private func explodeEnemy(enemy: SKNode) {
+        // Play the explosion animation at the enemy's position
+        let explosion = SKEmitterNode(fileNamed: "Explosion.sks")
+        explosion?.position = enemy.position
+        explosion?.zPosition = 1
+        self.addChild(explosion!)
+
+        // Remove the enemy after a short delay to simulate the explosion
+        let removeEnemyAction = SKAction.removeFromParent()
+        enemy.run(SKAction.sequence([SKAction.wait(forDuration: 0.1), removeEnemyAction]))
+
+        // Remove the explosion particle after it finishes
+        let removeExplosionAction = SKAction.removeFromParent()
+        explosion?.run(SKAction.sequence([SKAction.wait(forDuration: 2.0), removeExplosionAction]))
+    }
+    
+    private func checkCollisions() {
+        for torpedo in self.children where torpedo.name == "torpedo" {
+            for enemy in self.children where enemy.name == "enemy" {
+                if torpedo.intersects(enemy) {
+                    explodeEnemy(enemy: enemy)
+                    torpedo.removeFromParent()
+                    score += 1
+                    break
+                }
+            }
+        }
+    }
     // по тапу на экран стрелять
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         fire()
     }
     
-    private func checkCollisions() {
-            // Loop through all nodes in the scene
-            for node in self.children {
-                if node.name == "enemy" {
-                    // Check for collisions with the player node
-                    if node.intersects(player) {
-                        // Handle the collision (e.g., decrease player health, end the game, etc.)
-                        node.removeFromParent()
-                        score += 1
-                    }
-                }
-            }
-        }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered

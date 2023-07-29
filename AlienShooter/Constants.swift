@@ -17,6 +17,7 @@ enum Resourses {
         static let bluePlanet = "planet2"
         static let redPlanet = "planet3"
         static let greenPlanet = "planet4"
+        static let shoot = "shoot"
     }
     
     enum Texts {
