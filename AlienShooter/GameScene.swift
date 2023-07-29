@@ -52,7 +52,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsWorld.gravity = CGVector(dx: 0, dy: 0)
         self.physicsWorld.contactDelegate = self
         
-        gameTimer = Timer.scheduledTimer(timeInterval: 1,
+        gameTimer = Timer.scheduledTimer(timeInterval: 1, // при увеличении влияет на скорость игры
                                          target: self,
                                          selector: #selector(appearUfo),
                                          userInfo: nil,
@@ -62,37 +62,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     @objc private func appearUfo() {
         guard let enemies = GKRandomSource.sharedRandom().arrayByShufflingObjects(in: enemies) as? [String] else { return }
         let enemy = SKSpriteNode(imageNamed: enemies[0])
-        let randomXPosition = CGFloat.random(in: -self.size.width * 0.3 ... self.size.width * 0.3)
         
-        enemy.position = CGPoint(x: randomXPosition, y: self.size.height * 0.5)
-        enemy.setScale(0.15)
-        enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
-        enemy.physicsBody?.isDynamic = true
+        // Set initial position outside the screen boundaries
+                let xStart = CGFloat.random(in: -self.size.width ... self.size.width)
+                let yStart = self.size.height * 1.1 // Slightly above the top of the screen
+
+        enemy.position = CGPoint(x: xStart, y: yStart)
+                enemy.setScale(0.15)
+                enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+                enemy.physicsBody?.isDynamic = true
+        
+//        let randomXPosition = CGFloat.random(in: -self.size.width * 0.3 ... self.size.width * 0.3)
+//
+//        enemy.position = CGPoint(x: randomXPosition, y: self.size.height * 0.5)
+//        enemy.setScale(0.15)
+//        enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+//        enemy.physicsBody?.isDynamic = true
         
         enemy.name = "enemy" // Assign a name to the enemy node
         self.addChild(enemy)
         
         // Calculate the movement duration based on the enemy's starting position
-        let distanceToMove = abs(randomXPosition) // value for the desired distance
-        let movementDuration = TimeInterval(distanceToMove / 10) // divisor for the desired speed
+                let deltaX = player.position.x - xStart
+                let deltaY = player.position.y - yStart
+                let distanceToMove = hypot(deltaX, deltaY)
+                let movementSpeed = CGFloat(200.0) // Adjust this value for the desired speed
+
+                // Move the enemy towards the player with a constant speed
+                let movementDuration = TimeInterval(distanceToMove / movementSpeed)
+                let moveAction = SKAction.move(to: player.position, duration: movementDuration)
+        // TODO: - Взрыв и исчезновение с экрана
+                let removeAction = SKAction.removeFromParent()
+                let sequenceAction = SKAction.sequence([moveAction, removeAction])
+
+                enemy.run(sequenceAction)
         
-        // Move the enemy towards the spaceship
-        let moveAction = SKAction.move(to: player.position, duration: movementDuration)
-        let removeAction = SKAction.removeFromParent()
-        let sequenceAction = SKAction.sequence([moveAction, removeAction])
-        
-        enemy.run(sequenceAction)
-        
-        //        // Calculate the movement duration based on the enemy's starting position
-        //                let distanceToMove = self.size.width * 0.6
-        //                let movementDuration = TimeInterval(distanceToMove / 100)
-        //
-        //                // Move the enemy towards the spaceship
-        //                let moveAction = SKAction.move(to: player.position, duration: movementDuration)
-        //                let removeAction = SKAction.removeFromParent()
-        //                let sequenceAction = SKAction.sequence([moveAction, removeAction])
-        //
-        //                enemy.run(sequenceAction)
+//        // Calculate the movement duration based on the enemy's starting position
+//        let distanceToMove = abs(randomXPosition) // value for the desired distance
+//        let movementDuration = TimeInterval(distanceToMove / 10) // divisor for the desired speed
+//
+//        // Move the enemy towards the spaceship
+//        let moveAction = SKAction.move(to: player.position, duration: movementDuration)
+//        let removeAction = SKAction.removeFromParent()
+//        let sequenceAction = SKAction.sequence([moveAction, removeAction])
+//
+//        enemy.run(sequenceAction)
     }
     
     private func checkCollisions() {
