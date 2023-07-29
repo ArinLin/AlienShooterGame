@@ -13,18 +13,23 @@ enum Resourses {
         static let spaceship = "spaceship"
         static let alien = "ufo"
         static let asteroid = "asteroid"
-        static let yellowPlanet = "planet1"
+        static let orangePlanet = "planet1"
         static let bluePlanet = "planet2"
-        static let redPlanet = "planet2"
+        static let redPlanet = "planet3"
+        static let greenPlanet = "planet4"
+    }
+    
+    enum Texts {
+        static let scoreLabel = "Счет:"
     }
     
 //    enum spaceComponents {
 //        static let spaceship = UIImage(named: "spaceship")?.resized(to: CGSize(width: 10, height: 10))
 //        static let alien = UIImage(named: "ufo")
 //        static let asteroid = UIImage(named: "asteroid")
-//        static let yellowPlanet = UIImage(named: "planet1")
+//        static let orangePlanet = UIImage(named: "planet1")
 //        static let bluePlanet = UIImage(named: "planet2")
-//        static let redPlanet = UIImage(named: "planet2")
+//        static let redPlanet = UIImage(named: "planet3")
 //    }
 //    enum Colors {
 //        static let valid = UIColor(named: "valid")
