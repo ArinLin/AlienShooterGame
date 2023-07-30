@@ -91,6 +91,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.run(sequenceAction)
     }
     
+    // MARK: - Spaceship Movement
+    func moveSpaceshipRight() {
+        let moveAction = SKAction.moveBy(x: 50, y: 0, duration: 0.1)
+        player.run(moveAction)
+    }
+    
+    func moveSpaceshipLeft() {
+        let moveAction = SKAction.moveBy(x: -50, y: 0, duration: 0.1)
+        player.run(moveAction)
+    }
+    
     func fire() {
         let torpedo = SKSpriteNode(imageNamed: Resourses.spaceComponentsNames.shoot)
         torpedo.setScale(0.1)
@@ -106,13 +117,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(torpedo)
         
         let animDuration: TimeInterval = 0.3
-            var actions = [SKAction]()
-            actions.append(SKAction.move(to: CGPoint(x: player.position.x, y: 800), duration: animDuration))
-            actions.append(SKAction.removeFromParent())
-            torpedo.run(SKAction.sequence(actions))
-
-            // Check for collision with enemies
-            checkEnemyCollision(torpedo: torpedo)
+        var actions = [SKAction]()
+        actions.append(SKAction.move(to: CGPoint(x: player.position.x, y: 800), duration: animDuration))
+        actions.append(SKAction.removeFromParent())
+        torpedo.run(SKAction.sequence(actions))
+        
+        // Check for collision with enemies
+        checkEnemyCollision(torpedo: torpedo)
     }
     
     private func checkEnemyCollision(torpedo: SKSpriteNode) {
@@ -134,11 +145,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         explosion?.position = enemy.position
         explosion?.zPosition = 1
         self.addChild(explosion!)
-
+        
         // Remove the enemy after a short delay to simulate the explosion
         let removeEnemyAction = SKAction.removeFromParent()
         enemy.run(SKAction.sequence([SKAction.wait(forDuration: 0.1), removeEnemyAction]))
-
+        
         // Remove the explosion particle after it finishes
         let removeExplosionAction = SKAction.removeFromParent()
         explosion?.run(SKAction.sequence([SKAction.wait(forDuration: 2.0), removeExplosionAction]))
@@ -156,10 +167,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    // по тапу на экран стрелять
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        
+        // Get the touch location in the scene's coordinate system
+        let touchLocation = touch.location(in: self)
+        
+        // Check if the touch location is to the left or right of the spaceship
+        if touchLocation.x > player.position.x {
+            moveSpaceshipRight()
+        } else {
+            moveSpaceshipLeft()
+        }
+        
+        // Fire a torpedo when the screen is tapped
         fire()
     }
+    
+    
+    //    // по тапу на экран стрелять
+    //    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    //        fire()
+    //    }
     
     
     override func update(_ currentTime: TimeInterval) {
