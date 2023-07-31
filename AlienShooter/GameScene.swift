@@ -15,7 +15,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var scoreLabel: SKLabelNode!
     var score: Int = 0 {
         didSet {
-            scoreLabel.text = "Счет: \(score)"
+            scoreLabel.text = "\(Resourses.Texts.scoreLabel) \(score)"
         }
     }
     var gameTimer: Timer!
@@ -31,13 +31,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let labelPosition = CGPoint(x: -0.3, y: 0.4)
         
         spaceBG = SKEmitterNode(fileNamed: "Sky")
-        spaceBG.position =  CGPoint(x: size.width * spaceBGPosition.x, y: size.height * spaceBGPosition.y) //CGPoint(x: 0, y: 1000)
+        spaceBG.position =  CGPoint(x: size.width * spaceBGPosition.x, y: size.height * spaceBGPosition.y)
         spaceBG.advanceSimulationTime(3)
         self.addChild(spaceBG)
         spaceBG.zPosition = -1
         
         player = SKSpriteNode(imageNamed: Resourses.spaceComponentsNames.spaceship)
-        player.position = CGPoint(x: size.width * playerPosition.x, y: size.height * playerPosition.y) //CGPoint(x: 0, y: -500)
+        player.position = CGPoint(x: size.width * playerPosition.x, y: size.height * playerPosition.y)
         player.setScale(0.18)
         self.addChild(player)
         
@@ -79,7 +79,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let deltaX = player.position.x - xStart
         let deltaY = player.position.y - yStart
         let distanceToMove = hypot(deltaX, deltaY)
-        let movementSpeed = CGFloat(200.0) // Adjust this value for the desired speed
+        let movementSpeed = CGFloat(200.0) // value for the desired speed
         
         // Move the enemy towards the player with a constant speed
         let movementDuration = TimeInterval(distanceToMove / movementSpeed)
@@ -156,13 +156,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func checkCollisions() {
-        for torpedo in self.children where torpedo.name == "torpedo" {
-            for enemy in self.children where enemy.name == "enemy" {
+        for enemy in self.children where enemy.name == "enemy" {
+            if player.intersects(enemy) {
+                // Collision with an enemy occurred
+                explodeEnemy(enemy: player)
+                explodeEnemy(enemy: enemy)
+                player.removeFromParent()
+                enemy.removeFromParent()
+                gameOver() // Call the game over function
+                return
+            }
+            
+            for torpedo in self.children where torpedo.name == "torpedo" {
                 if torpedo.intersects(enemy) {
+                    // Collision between torpedo and enemy occurred
                     explodeEnemy(enemy: enemy)
                     torpedo.removeFromParent()
                     score += 1
-                    break
+                    return
                 }
             }
         }
@@ -185,15 +196,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fire()
     }
     
-    
-    //    // по тапу на экран стрелять
-    //    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-    //        fire()
-    //    }
-    
-    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         checkCollisions()
+    }
+    
+    private func gameOver() {
+        gameTimer.invalidate() // Stop the timer that spawns enemies
+        removeAllActions() // Stop all actions on the scene
+        
+        let gameOverLabel = SKLabelNode(text: "Game Over")
+        gameOverLabel.fontName = "AmericanTypewriter-Bold"
+        gameOverLabel.fontSize = 60
+        gameOverLabel.fontColor = .red
+        gameOverLabel.position = CGPoint.zero
+        self.addChild(gameOverLabel)
+        
+        player.removeFromParent() // remove the spaceship from the scene
     }
 }
