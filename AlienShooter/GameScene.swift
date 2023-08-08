@@ -28,7 +28,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Create normalized positions
         let spaceBGPosition = CGPoint(x: 0.0, y: 0.5)
         let playerPosition = CGPoint(x: 0.0, y: -0.4)
-        let labelPosition = CGPoint(x: -0.3, y: 0.4)
+        let labelPosition = CGPoint(x: -0.25, y: 0.4)
         
         spaceBG = SKEmitterNode(fileNamed: "Sky")
         spaceBG.position =  CGPoint(x: size.width * spaceBGPosition.x, y: size.height * spaceBGPosition.y)
@@ -196,41 +196,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         fire()
     }
     
-//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        // If the user taps the screen when the game is over, go back to the main menu
-//        if player.parent == nil {
-//            let mainMenuScene = MainMenuScene(size: self.size)
-//            mainMenuScene.scaleMode = .aspectFill
-//            self.view?.presentScene(mainMenuScene)
-//            return
-//        }
-//    }
-    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         checkCollisions()
     }
     
     private func gameOver() {
-        gameTimer.invalidate() // Stop the timer that spawns enemies
-        removeAllActions() // Stop all actions on the scene
-        
-        let gameOverLabel = SKLabelNode(text: "Game Over")
-        gameOverLabel.fontName = "AmericanTypewriter-Bold"
-        gameOverLabel.fontSize = 60
-        gameOverLabel.fontColor = .red
-        gameOverLabel.position = CGPoint.zero
-        self.addChild(gameOverLabel)
-        
-        player.removeFromParent() // remove the spaceship from the scene
-        
-        // выкидывает на главное меню, после попадания врага в корабль
-        // TODO: - add timer
-        if player.parent == nil {
-            let mainMenuScene = MainMenuScene(size: self.size)
-            mainMenuScene.scaleMode = .aspectFill
-            self.view?.presentScene(mainMenuScene)
-            return
-        }
+            gameTimer.invalidate() // Stop the timer that spawns enemies
+            removeAllActions() // Stop all actions on the scene
+
+            let gameOverScene = GameOverScene(size: self.size)
+            gameOverScene.scaleMode = .aspectFill
+            self.view?.presentScene(gameOverScene)
     }
 }
