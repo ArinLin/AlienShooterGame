@@ -181,20 +181,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-        
+
         // Get the touch location in the scene's coordinate system
         let touchLocation = touch.location(in: self)
-        
+
         // Check if the touch location is to the left or right of the spaceship
         if touchLocation.x > player.position.x {
             moveSpaceshipRight()
         } else {
             moveSpaceshipLeft()
         }
-        
+
         // Fire a torpedo when the screen is tapped
         fire()
     }
+    
+//    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        // If the user taps the screen when the game is over, go back to the main menu
+//        if player.parent == nil {
+//            let mainMenuScene = MainMenuScene(size: self.size)
+//            mainMenuScene.scaleMode = .aspectFill
+//            self.view?.presentScene(mainMenuScene)
+//            return
+//        }
+//    }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
@@ -213,5 +223,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(gameOverLabel)
         
         player.removeFromParent() // remove the spaceship from the scene
+        
+        // выкидывает на главное меню, после попадания врага в корабль
+        // TODO: - add timer
+        if player.parent == nil {
+            let mainMenuScene = MainMenuScene(size: self.size)
+            mainMenuScene.scaleMode = .aspectFill
+            self.view?.presentScene(mainMenuScene)
+            return
+        }
     }
 }
