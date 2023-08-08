@@ -74,8 +74,9 @@ class MainMenuScene: SKScene {
                 print("Нет данных")
             }
         case "settings":
-            // TODO: - logic
-            break
+            let settingsScene = SettingsScene(size: self.size)
+            settingsScene.scaleMode = .aspectFill
+            self.view?.presentScene(settingsScene)
             
         default:
             break
