@@ -21,6 +21,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gameTimer: Timer!
     var enemies = [Resourses.spaceComponentsNames.alien, Resourses.spaceComponentsNames.asteroid]
     
+    var savePlayerScoreCallback: ((PlayerScore) -> Void)?
+    
     override func didMove(to view: SKView) {
         // Set the anchor point to the center of the scene
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
@@ -38,7 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         player = SKSpriteNode(imageNamed: Resourses.spaceComponentsNames.spaceship)
         player.position = CGPoint(x: size.width * playerPosition.x, y: size.height * playerPosition.y)
-        player.setScale(0.18)
+        player.setScale(0.15)
         self.addChild(player)
         
         scoreLabel = SKLabelNode(text: "Счет: 0")
@@ -68,7 +70,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let yStart = self.size.height * 1.1 // Slightly above the top of the screen
         
         enemy.position = CGPoint(x: xStart, y: yStart)
-        enemy.setScale(0.15)
+        enemy.setScale(0.13)
         enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
         enemy.physicsBody?.isDynamic = true
         
@@ -104,7 +106,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func fire() {
         let torpedo = SKSpriteNode(imageNamed: Resourses.spaceComponentsNames.shoot)
-        torpedo.setScale(0.1)
+        torpedo.setScale(0.06)
         torpedo.position = player.position
         torpedo.position.y += 5
         
@@ -202,6 +204,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func gameOver() {
+        let playerScore = PlayerScore(playerName: "PlayerName", score: score)
+        savePlayerScoreCallback?(playerScore)
+        
             gameTimer.invalidate() // Stop the timer that spawns enemies
             removeAllActions() // Stop all actions on the scene
 

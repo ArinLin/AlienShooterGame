@@ -55,6 +55,7 @@ class SettingsScene: SKScene {
         nameTextField.autocapitalizationType = .words
         
         // Convert the nameTextField position from scene coordinates to view coordinates
+ //       let nameTextFieldViewPosition = view!.convert(CGPoint(x: size.width * nameLabelPosition.x + nameLabel.frame.size.width + 100, y: size.height * nameLabelPosition.y + 10), from: self)
         let nameTextFieldViewPosition = view!.convert(CGPoint(x: size.width * 0.2, y: size.height * 0.21), from: self)
         nameTextField.center = nameTextFieldViewPosition
         view?.addSubview(nameTextField)
@@ -108,15 +109,24 @@ class SettingsScene: SKScene {
 
         switch name {
         case "save":
-            // Save user settings
             let userName = nameTextField.text ?? ""
             let userEmail = emailTextField.text ?? ""
             let selectedDifficultyIndex = difficultyControl.selectedSegmentIndex
             let difficulty = ["Easy", "Medium", "Hard"][selectedDifficultyIndex]
-
-            // something with the user settings, such as saving to UserDefaults or a backend server
-
+            
+            let playerScore = PlayerScore(playerName: userName, score: 0) // Initialize with a default score
+            savePlayerScore(playerScore)
+            
             print("Name: \(userName), Email: \(userEmail), Difficulty: \(difficulty)")
+//            // Save user settings
+//            let userName = nameTextField.text ?? ""
+//            let userEmail = emailTextField.text ?? ""
+//            let selectedDifficultyIndex = difficultyControl.selectedSegmentIndex
+//            let difficulty = ["Easy", "Medium", "Hard"][selectedDifficultyIndex]
+//
+//            // something with the user settings, such as saving to UserDefaults or a backend server
+//
+//            print("Name: \(userName), Email: \(userEmail), Difficulty: \(difficulty)")
 
         default:
             break
