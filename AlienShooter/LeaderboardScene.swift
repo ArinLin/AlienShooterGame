@@ -6,6 +6,7 @@
 //
 
 import SpriteKit
+import UIKit
 
 class LeaderboardScene: SKScene {
     var playerScores: [PlayerScore] = [] // массив для хранения результатов игроков
@@ -15,6 +16,7 @@ class LeaderboardScene: SKScene {
     override func didMove(to view: SKView) {
         // Настройка интерфейса сцены, создание UITableView и другие UI элементы
         // Загрузка результатов игроков и отображение текущего игрока
+        playerScores = UserDefaultsManager.shared.getPlayerScores()
         loadPlayerScores()
 
         // Настройка и отображение UITableView
@@ -27,21 +29,27 @@ class LeaderboardScene: SKScene {
         // Добавление UITableView на сцену
         view.addSubview(tableView)
     }
+    
 
     // Функция для загрузки результатов игроков из UserDefaults
+//    func loadPlayerScores() {
+//        if let topScoresData = UserDefaults.standard.data(forKey: "TopScores"),
+//           let topScores = try? JSONDecoder().decode([PlayerScore].self, from: topScoresData) {
+//            playerScores = topScores.sorted { $0.score > $1.score }
+//        }
+//
+//        // загрузить результаты текущего игрока из UserDefaults, если они там сохранены
+//    }
     func loadPlayerScores() {
-        if let topScoresData = UserDefaults.standard.data(forKey: "TopScores"),
-           let topScores = try? JSONDecoder().decode([PlayerScore].self, from: topScoresData) {
-            playerScores = topScores.sorted { $0.score > $1.score }
-        }
-
-        // загрузить результаты текущего игрока из UserDefaults, если они там сохранены
+        playerScores = UserDefaultsManager.shared.getPlayerScores()
+        print(playerScores)
     }
 }
 
 extension LeaderboardScene: UITableViewDataSource, UITableViewDelegate {
     // Реализация методов UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print(playerScores.count)
         return playerScores.count
     }
 

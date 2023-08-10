@@ -36,7 +36,7 @@ class MainMenuScene: SKScene {
         button.fontSize = 36
         button.fontColor = .white
         button.position = position
-        button.name = text.lowercased() // Set the button name to its lowercase text
+        button.name = text.lowercased()
         
         return button
     }
@@ -57,19 +57,23 @@ class MainMenuScene: SKScene {
         case "start":
             let gameScene = GameScene(size: self.size)
             gameScene.scaleMode = .aspectFill
-            gameScene.savePlayerScoreCallback = { [weak self] playerScore in
-                self?.savePlayerScore(playerScore)
+            gameScene.savePlayerScoreCallback = { playerScore in
+                self.savePlayerScore(playerScore)
             }
             self.view?.presentScene(gameScene)
             
         case "leaderboard":
             let leaderboardScene = LeaderboardScene(size: self.size)
             leaderboardScene.scaleMode = .aspectFill
-            leaderboardScene.playerScores = UserDefaultsManager.shared.getPlayerScores()
+//            leaderboardScene.playerScores = playerScores
+            leaderboardScene.loadPlayerScores() // Load player scores from UserDefaultsManager
             self.view?.presentScene(leaderboardScene)
+            
+            
 //            let leaderboardScene = LeaderboardScene(size: self.size)
-//                       leaderboardScene.scaleMode = .aspectFill
-//                       self.view?.presentScene(leaderboardScene)
+//            leaderboardScene.scaleMode = .aspectFill
+//            leaderboardScene.playerScores = UserDefaultsManager.shared.getPlayerScores()
+//            self.view?.presentScene(leaderboardScene)
         case "settings":
             let settingsScene = SettingsScene(size: self.size)
             settingsScene.scaleMode = .aspectFill

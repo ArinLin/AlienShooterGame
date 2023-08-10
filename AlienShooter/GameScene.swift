@@ -165,7 +165,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 explodeEnemy(enemy: enemy)
                 player.removeFromParent()
                 enemy.removeFromParent()
-                gameOver() // Call the game over function
+                gameOver() 
                 return
             }
             
@@ -204,7 +204,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func gameOver() {
-        let playerScore = PlayerScore(playerName: "PlayerName", score: score)
+        let playerScore = PlayerScore(playerName: UserDefaultsManager.shared.activePlayer?.name ?? "default", score: score)
         savePlayerScoreCallback?(playerScore)
         
             gameTimer.invalidate() // Stop the timer that spawns enemies

@@ -125,7 +125,7 @@ class SettingsScene: SKScene {
             defaults.set(difficulty, forKey: "difficulty")
             
             let playerScore = PlayerScore(playerName: userName, score: 0) // Initialize with a default score
-            savePlayerScoreCallback?(playerScore)
+            //savePlayerScoreCallback?(playerScore)
             
             // Transition to the main menu scene
             if let view = self.view {
@@ -161,16 +161,16 @@ extension SettingsScene {
     private func registerKeyboardNotification() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
-                                               name: UIResponder.keyboardWillShowNotification, // мы должны понять, когда клавиатура будет подниматься. Когда клаиватура будет подниматься, будет вызываться метод keyboardWillShow
+                                               name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillHide),
-                                               name: UIResponder.keyboardWillHideNotification, // мы должны понять, когда клавиатура будет подниматься. Когда клаиватура будет подниматься, будет вызываться метод keyboardWillShow
+                                               name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
     
-    // после того, как происходит деинит контроллера, мы должны удалить нотификейшн
+    // после того, как происходит деинит контроллера, нужно удалить нотификейшн
     private func removeKeyboardNotification() {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
