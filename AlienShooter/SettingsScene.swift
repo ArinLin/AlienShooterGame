@@ -118,14 +118,31 @@ class SettingsScene: SKScene {
             let selectedDifficultyIndex = difficultyControl.selectedSegmentIndex
             let difficulty = ["Easy", "Medium", "Hard"][selectedDifficultyIndex]
             
+            // Save user settings to UserDefaults
+            let defaults = UserDefaults.standard
+            defaults.set(userName, forKey: "userName")
+            defaults.set(userEmail, forKey: "userEmail")
+            defaults.set(difficulty, forKey: "difficulty")
+            
             let playerScore = PlayerScore(playerName: userName, score: 0) // Initialize with a default score
             savePlayerScoreCallback?(playerScore)
             
-            print("Name: \(userName), Email: \(userEmail), Difficulty: \(difficulty)")
+            // Transition to the main menu scene
+            if let view = self.view {
+                let mainMenuScene = MainMenuScene(size: view.bounds.size)
+                mainMenuScene.scaleMode = .aspectFill
+                view.presentScene(mainMenuScene)
+            }
+//            let userName = nameTextField.text ?? ""
+//            let userEmail = emailTextField.text ?? ""
+//            let selectedDifficultyIndex = difficultyControl.selectedSegmentIndex
+//            let difficulty = ["Easy", "Medium", "Hard"][selectedDifficultyIndex]
+//
+//            let playerScore = PlayerScore(playerName: userName, score: 0) // Initialize with a default score
+//            savePlayerScoreCallback?(playerScore)
+//
+//            print("Name: \(userName), Email: \(userEmail), Difficulty: \(difficulty)")
             
-//            let mainMenuScene = MainMenuScene(size: self.size)
-//            mainMenuScene.scaleMode = .aspectFill
-//            self.view?.presentScene(mainMenuScene)
         default:
             break
         }
@@ -133,6 +150,10 @@ class SettingsScene: SKScene {
     
     override func willMove(from view: SKView) {
         removeKeyboardNotification()
+        
+        nameTextField.removeFromSuperview()
+        emailTextField.removeFromSuperview()
+        difficultyControl.removeFromSuperview()
     }
 }
 
