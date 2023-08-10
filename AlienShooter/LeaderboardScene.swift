@@ -7,15 +7,13 @@
 
 import SpriteKit
 
-class LeaderboardScene: SKScene, UITableViewDataSource, UITableViewDelegate {
+class LeaderboardScene: SKScene {
     var playerScores: [PlayerScore] = [] // массив для хранения результатов игроков
     var currentPlayerScore: PlayerScore? // Результат текущего игрока
-
     var tableView: UITableView!
 
     override func didMove(to view: SKView) {
         // Настройка интерфейса сцены, создание UITableView и другие UI элементы
-
         // Загрузка результатов игроков и отображение текущего игрока
         loadPlayerScores()
 
@@ -39,7 +37,9 @@ class LeaderboardScene: SKScene, UITableViewDataSource, UITableViewDelegate {
 
         // загрузить результаты текущего игрока из UserDefaults, если они там сохранены
     }
+}
 
+extension LeaderboardScene: UITableViewDataSource, UITableViewDelegate {
     // Реализация методов UITableViewDataSource
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return playerScores.count

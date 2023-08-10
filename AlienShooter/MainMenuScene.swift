@@ -55,10 +55,6 @@ class MainMenuScene: SKScene {
         
         switch name {
         case "start":
-//            let gameScene = GameScene(size: self.size)
-//            gameScene.scaleMode = .aspectFill
-//            self.view?.presentScene(gameScene)
-            
             let gameScene = GameScene(size: self.size)
             gameScene.scaleMode = .aspectFill
             gameScene.savePlayerScoreCallback = { [weak self] playerScore in
@@ -67,34 +63,13 @@ class MainMenuScene: SKScene {
             self.view?.presentScene(gameScene)
             
         case "leaderboard":
-//            if let topScoresData = UserDefaults.standard.data(forKey: "TopScores"),
-//               let topScores = try? JSONDecoder().decode([PlayerScore].self, from: topScoresData) {
-//                let sortedScores = topScores.sorted { $0.score > $1.score }
-//
-//                let leaderboardTable = SKNode()
-//                leaderboardTable.position = CGPoint.zero
-//
-//                var currentPosition = CGPoint(x: 0, y: 100)
-//
-//                for (index, playerScore) in sortedScores.prefix(10).enumerated() {
-//                    let playerLabel = SKLabelNode(text: "\(index + 1). \(playerScore.playerName): \(playerScore.score)")
-//                    playerLabel.fontName = "AmericanTypewriter-Bold"
-//                    playerLabel.fontSize = 24
-//                    playerLabel.fontColor = .white
-//                    playerLabel.position = currentPosition
-//                    leaderboardTable.addChild(playerLabel)
-//
-//                    currentPosition.y -= 30
-//                }
-//
-//                addChild(leaderboardTable)
-//            } else {
-//                print("Нет данных")
-//            }
-            
             let leaderboardScene = LeaderboardScene(size: self.size)
             leaderboardScene.scaleMode = .aspectFill
+            leaderboardScene.playerScores = UserDefaultsManager.shared.getPlayerScores()
             self.view?.presentScene(leaderboardScene)
+//            let leaderboardScene = LeaderboardScene(size: self.size)
+//                       leaderboardScene.scaleMode = .aspectFill
+//                       self.view?.presentScene(leaderboardScene)
         case "settings":
             let settingsScene = SettingsScene(size: self.size)
             settingsScene.scaleMode = .aspectFill
@@ -104,16 +79,7 @@ class MainMenuScene: SKScene {
             break
         }
     }
-    
     func savePlayerScore(_ playerScore: PlayerScore) {
-        var topScores = [PlayerScore]()
-        if let topScoresData = UserDefaults.standard.data(forKey: "TopScores"),
-           let decodedScores = try? JSONDecoder().decode([PlayerScore].self, from: topScoresData) {
-            topScores = decodedScores
+            UserDefaultsManager.shared.savePlayerScore(playerScore)
         }
-
-        topScores.append(playerScore)
-        topScores.sort { $0.score > $1.score }
-        updateLeaderboard(playerScores: topScores)
-    }
 }

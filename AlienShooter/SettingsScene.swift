@@ -6,6 +6,7 @@
 //
 
 import SpriteKit
+import UIKit
 
 class SettingsScene: SKScene {
     // Add properties for text fields and difficulty control
@@ -13,8 +14,11 @@ class SettingsScene: SKScene {
     var emailTextField: UITextField!
     var difficultyControl: UISegmentedControl!
     
+    var savePlayerScoreCallback: ((PlayerScore) -> Void)?
+    
     override func didMove(to view: SKView) {
         createSettingsScreen()
+        registerKeyboardNotification()
     }
 
     func createSettingsScreen() {
@@ -115,21 +119,56 @@ class SettingsScene: SKScene {
             let difficulty = ["Easy", "Medium", "Hard"][selectedDifficultyIndex]
             
             let playerScore = PlayerScore(playerName: userName, score: 0) // Initialize with a default score
-            savePlayerScore(playerScore)
+            savePlayerScoreCallback?(playerScore)
             
             print("Name: \(userName), Email: \(userEmail), Difficulty: \(difficulty)")
-//            // Save user settings
-//            let userName = nameTextField.text ?? ""
-//            let userEmail = emailTextField.text ?? ""
-//            let selectedDifficultyIndex = difficultyControl.selectedSegmentIndex
-//            let difficulty = ["Easy", "Medium", "Hard"][selectedDifficultyIndex]
-//
-//            // something with the user settings, such as saving to UserDefaults or a backend server
-//
-//            print("Name: \(userName), Email: \(userEmail), Difficulty: \(difficulty)")
-
+            
+//            let mainMenuScene = MainMenuScene(size: self.size)
+//            mainMenuScene.scaleMode = .aspectFill
+//            self.view?.presentScene(mainMenuScene)
         default:
             break
         }
+    }
+    
+    override func willMove(from view: SKView) {
+        removeKeyboardNotification()
+    }
+}
+
+extension SettingsScene {
+    private func registerKeyboardNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification, // мы должны понять, когда клавиатура будет подниматься. Когда клаиватура будет подниматься, будет вызываться метод keyboardWillShow
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification, // мы должны понять, когда клавиатура будет подниматься. Когда клаиватура будет подниматься, будет вызываться метод keyboardWillShow
+                                               object: nil)
+    }
+    
+    // после того, как происходит деинит контроллера, мы должны удалить нотификейшн
+    private func removeKeyboardNotification() {
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func keyboardWillShow(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let window = view?.window else {
+            return
+        }
+        
+        let keyboardFrameInScene = window.convert(keyboardFrame, to: self.view)
+        let keyboardOverlap = self.size.height - keyboardFrameInScene.origin.y
+        
+        scene?.position.y = min(0, keyboardOverlap)
+    }
+    
+    @objc private func keyboardWillHide(notification: Notification) {
+        scene?.position.y = 0
     }
 }
